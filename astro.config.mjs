@@ -2,10 +2,9 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// GitHub Pages: https://allibayev.github.io/saldr/
+// Custom domain on GitHub Pages: https://saldrstudio.com
 export default defineConfig({
-  site: 'https://allibayev.github.io',
-  base: '/saldr',
+  site: 'https://saldrstudio.com',
   trailingSlash: 'ignore',
   integrations: [sitemap()],
   prefetch: { prefetchAll: true, defaultStrategy: 'hover' },

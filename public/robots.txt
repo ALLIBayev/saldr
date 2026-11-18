@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://allibayev.github.io/saldr/sitemap-index.xml
+Sitemap: https://saldrstudio.com/sitemap-index.xml

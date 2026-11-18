@@ -1,6 +1,6 @@
 # Saldr Studio — website
 
-Agency site for Saldr Studio (Alizhan “Don” Saldyrbayev, Turin). Live: https://allibayev.github.io/saldr/
+Agency site for Saldr Studio (Alizhan “Don” Saldyrbayev, Turin). Live: https://saldrstudio.com
 
 ## Stack
 - **Astro 7**: static HTML, zero client framework, CSS inlined per page, prefetch on hover
@@ -21,11 +21,11 @@ Agency site for Saldr Studio (Alizhan “Don” Saldyrbayev, Turin). Live: https
 ## Run
 ```
 npm install
-npm run dev      # http://localhost:4321/saldr/
+npm run dev      # http://localhost:4321/
 npm run build    # outputs dist/
 ```
 
 ## Deploy
 Every push to `main` builds and deploys through `.github/workflows/deploy.yml`
 (Settings → Pages → Source: GitHub Actions).
-For a custom domain later: set `site` and remove `base` in `astro.config.mjs`, add `public/CNAME`.
+Custom domain: `public/CNAME` (saldrstudio.com), DNS at Cloudflare → GitHub Pages.
