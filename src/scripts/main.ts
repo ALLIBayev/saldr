@@ -16,6 +16,8 @@ const TG_USER = 'wcinreak';
 (() => {
   const d = document, html = d.documentElement, body = d.body;
   const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // Phones & tablets: native scroll, no intro, lighter effects, deferred setup
+  const MOBILE = matchMedia('(max-width: 899px), (hover: none)').matches;
   const FINE = matchMedia('(hover: hover) and (pointer: fine)').matches;
   const G = gsap, ST = ScrollTrigger;
   const $ = (s, r = d) => r.querySelector(s);
@@ -26,13 +28,14 @@ const TG_USER = 'wcinreak';
   };
 
   G.registerPlugin(ST, CustomEase, SplitText);
+  ST.config({ ignoreMobileResize: true });
   CustomEase.create('tg', '0.16,1,0.3,1'); CustomEase.create('tgio', '0.65,0,0.35,1');
   G.defaults({ ease: 'tg', duration: 1 });
   const EIO = 'tgio';
 
   /* ---------- Smooth scroll ---------- */
   let lenis = null;
-  if (!RM) {
+  if (!RM && !MOBILE) {
     lenis = new Lenis({ lerp: 0.085, smoothWheel: true, wheelMultiplier: 1 });
     if (G && ST) {
       lenis.on('scroll', ST.update);
@@ -368,45 +371,64 @@ const TG_USER = 'wcinreak';
     G.to('.hero .stage', { xPercent: 18, yPercent: -26, scale: 0.86, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
   }
 
-  /* Page hero titles + generic split headings */
-  $$('[data-split]').forEach(el => {
+  /* Page hero titles (above the fold, run now) */
+  $$('.phero [data-split]').forEach(el => {
     const sp = splitWords(el); if (!sp) return;
     G.set(sp.words, { yPercent: 115 });
-    const go = () => G.to(sp.words, { yPercent: 0, duration: 1.1, stagger: 0.035, onComplete: () => sp.revert() });
-    if (el.closest('.phero')) onIntro(go);
-    else ST.create({ trigger: el, start: 'top 88%', once: true, onEnter: go });
+    onIntro(() => G.to(sp.words, { yPercent: 0, duration: 1.1, stagger: 0.035, onComplete: () => sp.revert() }));
   });
   $$('.phero [data-fade]').forEach((el, i) => {
     G.set(el, { opacity: 0, y: 16 });
     onIntro(() => G.to(el, { opacity: 1, y: 0, duration: 1, delay: 0.25 + i * 0.08 }));
   });
 
+  /* Everything below the fold is set up in small idle chunks, so the first
+     seconds on a phone stay free for scrolling and taps. */
+  const idle = window.requestIdleCallback ? (cb => requestIdleCallback(cb, { timeout: 1200 })) : (cb => setTimeout(cb, 120));
+  const jobs = [];
+  const later = fn => jobs.push(fn);
+
+  later(() => $$('[data-split]').filter(el => !el.closest('.phero')).forEach(el => {
+    const sp = splitWords(el); if (!sp) return;
+    G.set(sp.words, { yPercent: 115 });
+    ST.create({ trigger: el, start: 'top 88%', once: true, onEnter: () => G.to(sp.words, { yPercent: 0, duration: 1.1, stagger: 0.035, onComplete: () => sp.revert() }) });
+  }));
+
   /* Blur-in titles */
+  later(() => {
   $$('[data-blur]').forEach(el => {
-    G.fromTo(el, { opacity: 0, filter: 'blur(12px)', y: 10 }, { opacity: 1, filter: 'blur(0px)', y: 0, duration: 1.2, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+    G.fromTo(el, MOBILE ? { opacity: 0, y: 14 } : { opacity: 0, filter: 'blur(12px)', y: 10 }, { opacity: 1, ...(MOBILE ? {} : { filter: 'blur(0px)' }), y: 0, duration: 1.2, scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
+  });
   });
 
   /* Manifesto scroll-scrub */
+  later(() => {
   $$('[data-scrub]').forEach(el => {
     const sp = SplitText.create($$('p', el), { type: 'words', wordsClass: 'w', aria: 'none' });
     G.to(sp.words, { color: '#16181D', stagger: 0.1, ease: 'none', scrollTrigger: { trigger: el, start: 'top 78%', end: 'bottom 55%', scrub: 0.6 } });
   });
+  });
 
   /* Draw on enter */
+  later(() => {
   $$('[data-draw]').forEach(svg => {
     const ps = $$('path,circle,line', svg).filter(p => !p.classList.contains('nodraw'));
     prepDraw(ps);
     G.to(ps, { strokeDashoffset: 0, duration: 1.8, stagger: 0.18, ease: EIO, scrollTrigger: { trigger: svg, start: 'top 85%', once: true } });
   });
+  });
 
   /* Case stack: previous card recedes */
+  later(() => {
   const cases = $$('.stack .case');
   cases.forEach((c, i) => {
     const next = cases[i + 1]; if (!next) return;
     G.to($('.case__frame', c), { scale: 0.92, '--dim': 0.7, ease: 'none', scrollTrigger: { trigger: next, start: 'top bottom', end: 'top 20%', scrub: true } });
   });
+  });
 
   /* Clip reveals + parallax */
+  later(() => {
   $$('[data-clip]').forEach(el => {
     G.fromTo(el, { clipPath: 'inset(10% 10% 10% 10% round 22px)' }, { clipPath: 'inset(0% 0% 0% 0% round 22px)', ease: 'none', scrollTrigger: { trigger: el, start: 'top 95%', end: 'top 35%', scrub: true } });
   });
@@ -414,26 +436,39 @@ const TG_USER = 'wcinreak';
     const v = parseFloat(el.dataset.parallax) || 0.1;
     G.fromTo(el, { yPercent: v * 100 }, { yPercent: -v * 100, ease: 'none', scrollTrigger: { trigger: el.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
+  });
 
   /* Reel entrance */
+  later(() => {
   if (reel) G.from('.reel__item', { y: 80, opacity: 0, duration: 1.3, stagger: 0.05, scrollTrigger: { trigger: reel, start: 'top 90%', once: true } });
+  });
 
   /* Process lines */
+  later(() => {
   const steps = $$('.step');
   if (steps.length) G.to(steps, { '--p': 1, stagger: 0.3, ease: 'none', scrollTrigger: { trigger: '.steps', start: 'top 82%', end: 'top 30%', scrub: true } });
+  });
 
   /* Footer wordmark */
+  later(() => {
   const fw = $$('.ftr__word span');
   if (fw.length) G.from(fw, { yPercent: 100, duration: 1.3, stagger: 0.06, scrollTrigger: { trigger: '.ftr__word', start: 'top 95%', once: true } });
+  });
 
   /* CTA mark spin */
+  later(() => {
   if ($('.cta__mark')) G.fromTo('.cta__mark', { rotate: -20, scale: 0.85 }, { rotate: 10, scale: 1.05, ease: 'none', scrollTrigger: { trigger: '.cta', start: 'top bottom', end: 'bottom top', scrub: true } });
+  });
 
   /* Plans / principles subtle stagger (one orchestrated moment per group) */
+  later(() => {
   ['.plans .plan', '.princ > div', '.idgrid .idtile', '.swatches .sw'].forEach(sel => {
     const els = $$(sel); if (!els.length) return;
     G.from(els, { y: 40, opacity: 0, duration: 1.1, stagger: 0.08, scrollTrigger: { trigger: els[0].parentElement, start: 'top 85%', once: true } });
   });
+  });
 
-  addEventListener('load', () => ST.refresh());
+  const run = () => { const job = jobs.shift(); if (job) { job(); idle(run); } else ST.refresh(); };
+  idle(run);
+  addEventListener('load', () => { if (!jobs.length) ST.refresh(); });
 })();

@@ -41,7 +41,7 @@ const word = ['s', 'a', 'l', 'd', 'r'];
   <link rel="apple-touch-icon" href={u('apple-touch-icon.png')} />
   <link rel="sitemap" href={u('sitemap-index.xml')} />
   <link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin />
-  <script is:inline>document.documentElement.classList.replace('no-js','js');try{if(!sessionStorage.getItem('sd-seen')){document.documentElement.classList.add('intro')}}catch(e){}</script>
+  <script is:inline>document.documentElement.classList.replace('no-js','js');try{if(!sessionStorage.getItem('sd-seen')&&matchMedia('(min-width:900px) and (hover:hover)').matches){document.documentElement.classList.add('intro')}}catch(e){}</script>
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
 </head>
 <body>
