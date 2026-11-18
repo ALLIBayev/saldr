@@ -1,0 +1,13 @@
+---
+const s = [
+  ['Intro call', '15 minutes', 'You tell me what you need. I tell you honestly whether I’m the right fit.'],
+  ['Free first screen', 'Within 48 hours', 'I design your home page or key screen before you pay anything.'],
+  ['Design & build', '2–6 weeks', 'Fixed price, 50% upfront. You follow progress on a live preview link.'],
+  ['Launch & care', 'From day one', 'Hosting, analytics, fixes and new features on a simple monthly plan.'],
+];
+---
+<ol class="steps">
+  {s.map(([t, when, p], i) => (
+    <li class="step"><span class="step__n">{String(i + 1).padStart(2, '0')}</span><h3>{t}</h3><p class="step__t">{when}</p><p>{p}</p></li>
+  ))}
+</ol>

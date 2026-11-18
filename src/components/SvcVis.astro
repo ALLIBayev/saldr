@@ -1,0 +1,18 @@
+---
+import Shot from './Shot.astro';
+import EagleStage from './EagleStage.astro';
+interface Props { k: string; active?: boolean }
+const { k, active = false } = Astro.props;
+const a = active ? ' is-active' : '';
+---
+{k === 'web' && <div class={`svc__vis svc__vis--web${a}`} data-vis="web"><div class="browser"><div class="browser__bar"><i></i><i></i><i></i><span></span></div><Shot name="layl-1" widths={[720, 1080]} sizes="(min-width: 900px) 40vw, 80vw" /></div></div>}
+{k === 'app' && <div class={`svc__vis svc__vis--app${a}`} data-vis="app"><div class="phone"><Shot name="ci-m" widths={[390]} sizes="250px" /></div><div class="phone"><Shot name="sp-m" widths={[390]} sizes="200px" /></div></div>}
+{k === 'brand' && <div class={`svc__vis svc__vis--brand${a}`} data-vis="brand"><EagleStage labels={false} /></div>}
+{k === 'ai' && (
+  <div class={`svc__vis svc__vis--ai${a}`} data-vis="ai"><div class="chat">
+    <div class="bub bub--me">Ciao! Do you have the black hoodie in M?<small>21:47</small></div>
+    <div class="bub bub--bot">Yes — Hurriya Hoodie, size M. Want me to reserve it?<small>21:47 · LAYL assistant</small></div>
+    <div class="bub bub--me">Yes please, deliver to Almaty<small>21:48</small></div>
+    <div class="bub bub--bot"><span class="typing"><i></i><i></i><i></i></span></div>
+  </div></div>
+)}

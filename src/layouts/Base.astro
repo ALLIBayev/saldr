@@ -1,0 +1,108 @@
+---
+import '@fontsource-variable/onest/index.css';
+import '../styles/global.css';
+import Eagle from '../components/Eagle.astro';
+import BriefForm from '../components/BriefForm.astro';
+import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
+import { SITE, u, tg } from '../data/site';
+
+interface Props { title: string; description: string; active?: string }
+const { title, description, active = '' } = Astro.props;
+const NAV = [['work', 'Work'], ['services', 'Services'], ['studio', 'Studio'], ['contact', 'Contact']];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = new URL(u('og.png'), Astro.site);
+const ld = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService', name: SITE.full,
+  description: 'Independent design and development studio in Turin: websites, apps, brand identity and AI automation.',
+  url: new URL(u(''), Astro.site).href, image: og.href, founder: { '@type': 'Person', name: 'Alizhan Saldyrbayev' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Turin', addressCountry: 'IT' },
+  sameAs: [`https://t.me/${SITE.channel}`, `https://github.com/${SITE.github}`],
+};
+const word = ['s', 'a', 'l', 'd', 'r'];
+---
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonical} />
+  <meta name="theme-color" content="#F2F3EF" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content={SITE.full} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:image" content={og} />
+  <meta property="og:image:width" content="1200" /><meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href={u('favicon.svg')} type="image/svg+xml" />
+  <link rel="apple-touch-icon" href={u('apple-touch-icon.png')} />
+  <link rel="sitemap" href={u('sitemap-index.xml')} />
+  <link rel="preload" href={onestLatin} as="font" type="font/woff2" crossorigin />
+  <script is:inline>document.documentElement.classList.replace('no-js','js');try{if(!sessionStorage.getItem('sd-seen')){document.documentElement.classList.add('intro')}}catch(e){}</script>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="haze" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="blueprint" aria-hidden="true"><svg preserveAspectRatio="none" viewBox="0 0 1440 900"><g fill="none" stroke="currentColor" stroke-width="1"><path vector-effect="non-scaling-stroke" d="M240 0V900M480 0V900M720 0V900M960 0V900M1200 0V900M0 300H1440M0 600H1440"/><circle vector-effect="non-scaling-stroke" cx="720" cy="450" r="330"/><path vector-effect="non-scaling-stroke" stroke-dasharray="4 8" d="M0 0L1440 900M1440 0L0 900"/></g></svg></div>
+
+  <div class="pt" aria-hidden="true"><div class="pt__bird"><Eagle /></div><span class="pt__count">000</span><span class="pt__word">saldr — drop to scale</span></div>
+
+  <header class="hdr">
+    <a class="logo" href={u('')} aria-label="Saldr Studio, home"><Eagle /><span>saldr</span></a>
+    <div class="nav">
+      <nav class="nav__links" aria-label="Main"><span class="nav__pill" aria-hidden="true"></span>
+        {NAV.map(([h, t]) => <a href={u(h)} aria-current={active === h ? 'page' : undefined}>{t}</a>)}
+      </nav>
+      <button class="btn btn--primary btn--sm" type="button" data-drawer-open data-magnetic><span class="roll"><span>Start a project</span><span aria-hidden="true">Start a project</span></span></button>
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="mmenu"><span class="nav__burger-t">Menu</span><i aria-hidden="true"></i></button>
+    </div>
+  </header>
+  <div class="mmenu" id="mmenu">
+    <nav aria-label="Mobile">{[['', 'Home'], ...NAV].map(([h, t]) => <a href={u(h)}><span>{t}</span></a>)}</nav>
+    <div class="mmenu__foot">
+      <button class="btn btn--primary" type="button" data-drawer-open>Start a project</button>
+      <p>Telegram <a href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram}</a><br />Turin, Italy · <span data-clock>--:--</span></p>
+    </div>
+  </div>
+  <div class="ruler" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor__dot"></span><span class="cursor__label"></span></div>
+
+  <main id="main"><slot /></main>
+
+  <footer class="ftr">
+    <div class="wrap">
+      <div class="ftr__top">
+        <div>
+          <p>An independent design and development studio in Turin. Websites, apps, brand identities and AI automation.</p>
+          <a class="ftr__mail link-u" href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram} on Telegram</a>
+        </div>
+        <div><p class="ftr__h">Pages</p><ul>{[...NAV, ['identity', 'Identity']].map(([h, t]) => <li><a class="link-u" href={u(h)}>{t}</a></li>)}</ul></div>
+        <div><p class="ftr__h">Recent work</p><ul><li><a class="link-u" href={u('work/layl')}>LAYL</a></li><li><a class="link-u" href={u('work/convoglio')}>ConVoglio</a></li><li><a class="link-u" href={u('work/cirillico')}>USPR Cirillico</a></li><li><a class="link-u" href={u('work/san-paolo')}>San Paolo Torino</a></li></ul></div>
+        <div><p class="ftr__h">Elsewhere</p><ul>
+          <li><a class="link-u" href={`https://t.me/${SITE.channel}`} target="_blank" rel="noopener">Telegram channel</a></li>
+          <li><a class="link-u" href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub</a></li>
+          <li><a class="link-u" href="https://layl-clo.github.io/layl-store/" target="_blank" rel="noopener">LAYL store</a></li></ul>
+          <p class="ftr__h" style="margin-top:28px">Turin time</p><p><span data-clock>--:--</span></p></div>
+      </div>
+      <div class="ftr__word" aria-hidden="true"><span><Eagle /></span>{word.map((c) => <span>{c}</span>)}</div>
+      <div class="ftr__bottom"><span>© {new Date().getFullYear()} Saldr Studio · Alizhan Saldyrbayev</span><span>Drop to scale.</span><a href="#main">Back to top</a></div>
+    </div>
+  </footer>
+
+  <div class="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dw-title">
+    <div class="drawer__scrim" data-drawer-close></div>
+    <div class="drawer__panel">
+      <div class="drawer__head"><h2 id="dw-title" class="h3">Start a project</h2><button class="drawer__close" type="button" data-drawer-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
+      <div class="drawer__body">
+        <p class="muted" style="margin-bottom:26px">Tell me what you're making. You'll get a free first screen of it within 48 hours, before any commitment.</p>
+        <BriefForm id="dw" />
+      </div>
+    </div>
+  </div>
+  <script>import '../scripts/main.ts';</script>
+</body>
+</html>

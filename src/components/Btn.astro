@@ -1,0 +1,10 @@
+---
+interface Props { label: string; variant?: string; href?: string; drawer?: boolean; magnetic?: boolean; small?: boolean; ext?: boolean; class?: string }
+const { label, variant = 'primary', href, drawer = false, magnetic = true, small = false, ext = false, class: cls = '' } = Astro.props;
+const c = `btn btn--${variant}${small ? ' btn--sm' : ''} ${cls}`;
+---
+{drawer ? (
+  <button class={c} type="button" data-drawer-open data-magnetic={magnetic ? '' : undefined}><span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span></button>
+) : (
+  <a class={c} href={href} data-magnetic={magnetic ? '' : undefined} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}><span class="roll"><span>{label}</span><span aria-hidden="true">{label}</span></span></a>
+)}

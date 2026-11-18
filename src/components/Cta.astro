@@ -1,0 +1,14 @@
+---
+import Eagle from './Eagle.astro';
+import Btn from './Btn.astro';
+interface Props { title: string; text: string }
+const { title, text } = Astro.props;
+---
+<section class="cta">
+  <div class="cta__mark" aria-hidden="true"><Eagle /></div>
+  <div class="wrap">
+    <h2 class="h1" data-split>{title}</h2>
+    <p>{text}</p>
+    <Btn label="Start a project" drawer />
+  </div>
+</section>

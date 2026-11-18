@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import Shot from '../../components/Shot.astro';
+import Cta from '../../components/Cta.astro';
+import { CASES } from '../../data/cases';
+import { u } from '../../data/site';
+const keys = CASES.map((c) => [c.slug, c.imgs[0]]);
+---
+<Base title="Work — Saldr Studio" description="Selected projects by Saldr Studio: LAYL, ConVoglio ONLUS, USPR Cirillico, San Paolo Torino." active="work">
+  <div class="wpreview" aria-hidden="true">{keys.map(([k, n]) => <Shot name={n} widths={[720]} sizes="440px" class={`pv-${k}`} />)}</div>
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split>Work</h1>
+    <p class="lead" data-fade>Projects for a streetwear label, a volunteer association and two football clubs. Each one designed and built from scratch.</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="filters" role="group" aria-label="Filter projects">
+      {[['all', 'All'], ['ecommerce', 'E-commerce'], ['nonprofit', 'Nonprofit'], ['sport', 'Sport'], ['product', 'Product']].map(([f, t]) => <button type="button" data-f={f} aria-pressed={f === 'all' ? 'true' : 'false'}>{t}</button>)}
+    </div>
+    <div class="wlist">
+      {CASES.map((c) => (
+        <a class="wrow" href={u(`work/${c.slug}`)} data-key={c.slug} data-cat={c.cat}>
+          <div class="wrow__thumb"><Shot name={c.imgs[0]} widths={[720]} sizes="92vw" /></div>
+          <span class="wrow__name">{c.name}</span><span class="wrow__desc">{c.short}</span><span class="wrow__year">{c.year}</span>
+          <span class="wrow__arrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      ))}
+      <div class="wrow wrow--soon" data-cat="product"><span class="wrow__name">Untitled product</span><span class="wrow__desc">App, website and landing page — launching 2027</span><span class="wrow__year">In progress</span><span></span></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="cshot" data-clip><Shot name="cv-full" alt="Full ConVoglio home page redesign, top to bottom" widths={[960, 1440]} /></div></div></section>
+  <Cta title="Your project could be next." text="Tell me about it and get a free first screen within 48 hours." />
+</Base>

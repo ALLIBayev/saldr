@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import BriefForm from '../components/BriefForm.astro';
+import { SITE, tg } from '../data/site';
+---
+<Base title="Contact — Saldr Studio" description="Start a project with Saldr Studio. Free first screen within 48 hours." active="contact">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:11ch">Start a project</h1>
+    <p class="lead" data-fade>A few lines are enough. You’ll get a reply within one working day and a free first screen within 48 hours.</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap contact">
+    <div class="contact__side">
+      <h2 class="h3">What happens next</h2>
+      <ol>
+        <li><span>01</span><div><b>I read your brief</b><p>And reply within one working day with a couple of questions.</p></div></li>
+        <li><span>02</span><div><b>15-minute call</b><p>We agree on scope, timeline and a fixed price.</p></div></li>
+        <li><span>03</span><div><b>Free first screen</b><p>Within 48 hours you see your home page or key screen designed.</p></div></li>
+      </ol>
+      <div class="contact__direct"><span class="muted small">Prefer to write directly?</span><a class="link-u" href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram} on Telegram</a><a class="small link-u" href={`https://t.me/${SITE.channel}`} target="_blank" rel="noopener" style="font-size:1rem">Follow the channel — @{SITE.channel}</a><span class="muted small">Turin, Italy · <span data-clock>--:--</span> local time</span></div>
+    </div>
+    <div class="contact__formwrap"><BriefForm id="pg" /></div>
+  </div></section>
+</Base>

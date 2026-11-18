@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+import Btn from '../components/Btn.astro';
+import Cta from '../components/Cta.astro';
+import { u } from '../data/site';
+const princ = [
+  ['M22 4v36M8 22a14 14 0 1 0 28 0a14 14 0 1 0 -28 0', 'One person, whole product', 'Design, code and launch stay in one head. Decisions are fast and nothing gets lost between a designer and a developer.'],
+  ['M6 30h20M14 22h24M6 14h14', 'Fast is a feature', 'Every page aims to load in under a second on a phone. Speed is the first thing customers feel and the last thing most sites fix.'],
+  ['M6 22a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M18 22a10 10 0 1 0 20 0a10 10 0 1 0 -20 0', 'Speak the customer’s language', 'Literally. Sites ship in the languages your customers use — Italian, English, Russian, Kazakh and more.'],
+  ['M6 34 L22 10 L38 34', 'You own what you pay for', 'Code, designs, domain and accounts are yours at launch. No lock-in, no platform you can’t leave.'],
+];
+const tools = ['Figma', 'Astro', 'React', 'Next.js', 'TypeScript', 'Tailwind', 'GSAP', 'Supabase', 'Python', 'Telegram & WhatsApp APIs', 'OpenAI & Claude APIs', 'GitHub Pages & Vercel'];
+---
+<Base title="Studio — Saldr Studio" description="Saldr is the one-person studio of Alizhan “Don” Saldyrbayev, a Kazakh-born designer and developer in Turin." active="studio">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:13ch">A studio of one, on purpose.</h1>
+    <p class="lead" data-fade>Saldr is small by design. You work directly with the person who makes your product.</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap story">
+    <div><div class="founder__card" style="aspect-ratio:4/4.8">
+      <svg class="cons-art" viewBox="0 0 400 480" aria-hidden="true" data-draw><g fill="none" stroke="#16181D" stroke-opacity=".12"><circle cx="200" cy="260" r="150"/><circle cx="200" cy="260" r="95"/><path d="M0 260H400M200 0V480M60 120 340 400M340 120 60 400"/></g></svg>
+      <div class="founder__coords"><span>43.24° N · 76.89° E</span><span>Kazakhstan</span></div>
+      <div class="founder__big">Don.</div>
+      <div class="founder__coords"><span>45.07° N · 7.69° E</span><span>Turin</span></div>
+    </div></div>
+    <div class="story__body">
+      <p>I’m Alizhan Saldyrbayev — Don to most people. I grew up in Kazakhstan and now live in Turin, where I study global law and run Saldr.</p>
+      <p class="muted">I started building websites for my own projects — a clothing label, then sites for friends and the clubs and associations around me. People kept asking who made them. Saldr is the answer, made official.</p>
+      <p class="muted">Law taught me to read the fine print: contracts, privacy and GDPR are part of the job here, not an afterthought. Design taught me that the details nobody notices are the ones everybody feels.</p>
+      <p>The mark is a berkut, the golden eagle of Kazakh falconry. It sees the whole field from above, then drops exactly where it needs to. Drop to scale — that’s the promise on every project.</p>
+      <div style="margin-top:40px"><Btn label="See the identity" variant="ghost" href={u('identity')} /></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>How I work</h2></div>
+    <div class="princ">{princ.map(([d, t, p]) => <div><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg><div><h3>{t}</h3><p>{p}</p></div></div>)}</div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>Tools of the trade</h2><p>Chosen for speed, longevity and how easy they are for you to keep running.</p></div>
+    <div class="tools">{tools.map((t) => <span>{t}</span>)}</div>
+  </div></section>
+  <Cta title="Say hello." text="In English, Italiano, Русский or Қазақша." />
+</Base>

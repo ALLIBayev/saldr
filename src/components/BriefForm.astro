@@ -1,0 +1,49 @@
+---
+import { SITE } from '../data/site';
+interface Props { id: string }
+const { id } = Astro.props;
+---
+<form class="form js-form" novalidate>
+  <div class="field" data-req>
+    <label for={`${id}-name`}>Your name</label>
+    <input id={`${id}-name`} name="name" autocomplete="name" required />
+    <span class="err">Add your name so I know who to reply to.</span>
+  </div>
+  <div class="field" data-req>
+    <label for={`${id}-contact`}>Email or Telegram</label>
+    <input id={`${id}-contact`} name="contact" autocomplete="email" required />
+    <span class="err">Add an email or a @telegram handle so I can reply.</span>
+  </div>
+  <div class="field"><fieldset><legend>What do you need?</legend>
+    <div class="chips">
+      {['Website', 'App', 'Brand identity', 'AI automation', 'Online store'].map((v) => (
+        <label class="chip"><input type="checkbox" name="what" value={v} /><span>{v}</span></label>
+      ))}
+    </div></fieldset></div>
+  <div class="field"><fieldset><legend>Budget</legend>
+    <div class="chips">
+      {['Under €2k', '€2–5k', '€5–10k', '€10k+'].map((v) => (
+        <label class="chip"><input type="radio" name="budget" value={v} /><span>{v}</span></label>
+      ))}
+    </div></fieldset></div>
+  <div class="field" data-req>
+    <label for={`${id}-msg`}>About the project</label>
+    <textarea id={`${id}-msg`} name="message" rows="4" required></textarea>
+    <span class="hint">A few lines are enough: what it is, who it's for, when you'd like to launch.</span>
+    <span class="err">Tell me a little about the project.</span>
+  </div>
+  <div class="form__foot">
+    <button class="btn btn--ink" type="submit"><span class="roll"><span>Prepare my brief</span><span aria-hidden="true">Prepare my brief</span></span></button>
+    <p class="small">Your brief opens in Telegram, ready to send to @{SITE.telegram}. Nothing is stored on this site.</p>
+  </div>
+</form>
+<div class="done" role="status">
+  <h3 class="h3" tabindex="-1">Your brief is ready</h3>
+  <p class="muted">Send it on Telegram — the message is already filled in. If it doesn't appear, copy the brief and paste it into the chat with @{SITE.telegram}.</p>
+  <div class="done__box"></div>
+  <div class="done__actions">
+    <a class="btn btn--primary btn--sm done__tg" href={`https://t.me/${SITE.telegram}`} target="_blank" rel="noopener"><span class="roll"><span>Send on Telegram</span><span aria-hidden="true">Send on Telegram</span></span></a>
+    <button class="btn btn--ghost btn--sm done__copy" type="button"><span class="roll"><span>Copy brief</span><span aria-hidden="true">Copy brief</span></span></button>
+    <button class="btn btn--ghost btn--sm done__back" type="button">Edit brief</button>
+  </div>
+</div>

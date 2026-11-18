@@ -1,0 +1,26 @@
+---
+import Eagle from './Eagle.astro';
+interface Props { class?: string; labels?: boolean }
+const { class: cls = '', labels = true } = Astro.props;
+---
+<div class={`stage ${cls}`}>
+  <svg class="stage__lines" viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="cons cons--dash" cx="50" cy="50" r="46" />
+    <circle class="cons" cx="50" cy="50" r="34" />
+    <circle class="cons" cx="50" cy="50" r="18" />
+    <path class="cons" d="M0 50H100" />
+    <path class="cons cons--dash" d="M50 0V100" />
+    <path class="cons" d="M8 78 L92 14" />
+    <path class="cons cons--dash" d="M14 92 L86 8" />
+    {labels && (
+      <g>
+        <circle class="node" cx="91" cy="15" r="0.9" /><circle class="node" cx="9" cy="77.5" r="0.9" /><circle class="node" cx="50" cy="50" r="0.9" />
+        <text class="lbl" x="80" y="11">wingtip</text>
+        <text class="lbl" x="4" y="84">tail</text>
+        <text class="lbl" x="52.5" y="47">37°</text>
+        <text class="lbl" x="3" y="48.5">horizon</text>
+      </g>
+    )}
+  </svg>
+  <div class="stage__bird"><Eagle /></div>
+</div>

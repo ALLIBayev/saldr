@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import Eagle from '../components/Eagle.astro';
+import EagleStage from '../components/EagleStage.astro';
+import Cta from '../components/Cta.astro';
+const sw = [['Paper', '#F2F3EF', 'Backgrounds'], ['Ink', '#16181D', 'Text, mark'], ['Saldr teal', '#0A7C86', 'Actions'], ['Mist', '#CBE9EA', 'Atmosphere'], ['Sun', '#E9B949', 'Rare highlight'], ['Night', '#0F1316', 'Dark sections']];
+const rows = [['Display', '470 · −4.8%', 'Built to scale'], ['Heading', '470 · −4%', 'Selected work'], ['Lead', '400 · −1.2%', 'One person from sketch to launch.'], ['Body', '400 · 0', 'See the whole field, then drop on the detail.']];
+---
+<Base title="Identity — Saldr Studio" description="The Saldr Studio identity: the berkut mark, colour and type.">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:12ch">The Saldr identity</h1>
+    <p class="lead" data-fade>A golden eagle in a glide, cut as one solid shape. It reads the same on a phone, a hoodie and a sign.</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="construct">
+      <EagleStage />
+      <dl>
+        <div><dt>The berkut</dt><dd>The golden eagle of Kazakh falconry. A berkutchi trains one for years; it sees the whole steppe and drops without missing.</dd></div>
+        <div><dt>The glide</dt><dd>Wings on a 37° line from tail to wingtip — climbing, never level. The mark always points up and to the right.</dd></div>
+        <div><dt>One shape</dt><dd>A single filled silhouette, traced from the Saldr channel avatar. No outlines, no gradients.</dd></div>
+        <div><dt>Wordmark</dt><dd>“saldr” in lowercase Onest, set tight. The eagle sits to the left, slightly raised, as if lifting off the word.</dd></div>
+      </dl>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>Mark on every surface</h2></div>
+    <div class="idgrid">
+      <div class="idtile idtile--paper"><Eagle /><small>On paper</small></div>
+      <div class="idtile idtile--night"><Eagle /><small>On night</small></div>
+      <div class="idtile idtile--teal"><Eagle /><small>On teal</small></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>Colour</h2><p>Paper and ink do the work. Teal marks the one thing to press. Sun appears rarely.</p></div>
+    <div class="swatches">{sw.map(([n, h, us]) => <div class="sw"><i style={`background:${h}`}></i><div><b>{n}</b><span>{h} · {us}</span></div></div>)}</div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>Type</h2><p>Onest, one family in every weight. It was drawn with Cyrillic in mind, so Russian and Kazakh look as good as English.</p></div>
+    <div class="specimen"><div class="specimen__aa">Aa Әә</div><div class="specimen__rows">{rows.map(([n, m, s]) => <div><span>{s}</span><small>{n} — {m}</small></div>)}</div></div>
+  </div></section>
+  <Cta title="Need a mark of your own?" text="Brand identities start at two weeks, guidelines included." />
+</Base>
