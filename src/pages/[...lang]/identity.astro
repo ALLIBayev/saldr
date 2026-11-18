@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import Eagle from '../../components/Eagle.astro';
+import EagleStage from '../../components/EagleStage.astro';
+import Cta from '../../components/Cta.astro';
+import { t, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const I = T.identity;
+const sw = [['Paper', '#F2F3EF'], ['Ink', '#16181D'], ['Saldr teal', '#0A7C86'], ['Mist', '#CBE9EA'], ['Sun', '#E9B949'], ['Night', '#0F1316']];
+const meta = ['Display — 470 · −4.8%', 'Heading — 470 · −4%', 'Lead — 400 · −1.2%', 'Body — 400 · 0'];
+---
+<Base lang={lang} title={T.meta.identity[0]} description={T.meta.identity[1]} path="identity">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:12ch">{I.title}</h1>
+    <p class="lead" data-fade>{I.lead}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="construct">
+      <EagleStage />
+      <dl>{I.dl.map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{I.surfaces}</h2></div>
+    <div class="idgrid">
+      <div class="idtile idtile--paper"><Eagle /><small>{I.onPaper}</small></div>
+      <div class="idtile idtile--night"><Eagle /><small>{I.onNight}</small></div>
+      <div class="idtile idtile--teal"><Eagle /><small>{I.onTeal}</small></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{I.colour}</h2><p>{I.colourSub}</p></div>
+    <div class="swatches">{sw.map(([n, h], i) => <div class="sw"><i style={`background:${h}`}></i><div><b>{n}</b><span>{h} · {I.swatchUse[i]}</span></div></div>)}</div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{I.type}</h2><p>{I.typeSub}</p></div>
+    <div class="specimen"><div class="specimen__aa">Aa Әә</div><div class="specimen__rows">{I.rows.map((s, i) => <div><span>{s}</span><small>{meta[i]}</small></div>)}</div></div>
+  </div></section>
+  <Cta lang={lang} title={T.ctas.identity[0]} text={T.ctas.identity[1]} />
+</Base>

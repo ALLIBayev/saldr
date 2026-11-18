@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import { SITE, tg } from '../../data/site';
+import { t, legal, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const G = legal(lang); const D = G.terms;
+const fill = (h: string) => h
+  .replaceAll('{EMAIL}', `<a href="mailto:${SITE.email}">${SITE.email}</a>`)
+  .replaceAll('{TG}', `<a href="${tg(SITE.telegram)}" target="_blank" rel="noopener">@${SITE.telegram}</a>`);
+---
+<Base lang={lang} title={T.meta.terms[0]} description={T.meta.terms[1]} path="terms">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:12ch">{D.title}</h1>
+    <p class="lead" data-fade>{D.summary}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap legal">
+    <p class="legal__meta">{T.legalUi.updated}: {G.updated}<br />{T.legalUi.disclaimer}</p>
+    <div class="legal__body">{D.sections.map(([h, b], i) => <section><h2><span>{String(i + 1).padStart(2, '0')}</span>{h}</h2><div set:html={fill(b)} /></section>)}</div>
+  </div></section>
+</Base>

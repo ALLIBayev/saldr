@@ -1,0 +1,34 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Shot from '../../../components/Shot.astro';
+import Cta from '../../../components/Cta.astro';
+import { CASES } from '../../../data/cases';
+import { t, L, langPaths, type Lang } from '../../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang);
+---
+<Base lang={lang} title={T.meta.work[0]} description={T.meta.work[1]} active="work" path="work">
+  <div class="wpreview" aria-hidden="true">{CASES.map((c) => <Shot name={c.imgs[0]} widths={[720]} sizes="440px" class={`pv-${c.slug}`} />)}</div>
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split>{T.work.title}</h1>
+    <p class="lead" data-fade>{T.work.lead}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="filters" role="group" aria-label={T.work.title}>
+      {T.work.filters.map(([f, tx]) => <button type="button" data-f={f} aria-pressed={f === 'all' ? 'true' : 'false'}>{tx}</button>)}
+    </div>
+    <div class="wlist">
+      {CASES.map((c) => (
+        <a class="wrow" href={L(lang, `work/${c.slug}`)} data-key={c.slug} data-cat={c.cat}>
+          <div class="wrow__thumb"><Shot name={c.imgs[0]} widths={[720]} sizes="92vw" /></div>
+          <span class="wrow__name">{c.name}</span><span class="wrow__desc">{T.cases[c.slug].short}</span><span class="wrow__year">{c.year}</span>
+          <span class="wrow__arrow"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 13 13 3M5 3h8v8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </a>
+      ))}
+      <div class="wrow wrow--soon" data-cat="product"><span class="wrow__name">{T.work.soon[0]}</span><span class="wrow__desc">{T.work.soon[1]}</span><span class="wrow__year">{T.work.soon[2]}</span><span></span></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap"><div class="cshot" data-clip><Shot name="cv-full" alt={T.work.fullAlt} widths={[960, 1440]} /></div></div></section>
+  <Cta lang={lang} title={T.ctas.work[0]} text={T.ctas.work[1]} />
+</Base>

@@ -8,6 +8,7 @@ import { CustomEase } from 'gsap/CustomEase';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
 const TG_USER = 'wcinreak';
+const WA_NUM = '393520881131';
 /* ==========================================================
    TAMGA STUDIO — main.js
    Smooth scroll · transitions · reveals · reel · drawer · forms
@@ -125,7 +126,7 @@ const TG_USER = 'wcinreak';
     const open = !html.classList.contains('menu-open');
     html.classList.toggle('menu-open', open);
     burger.setAttribute('aria-expanded', open);
-    burger.querySelector('.nav__burger-t').textContent = open ? 'Close' : 'Menu';
+    burger.querySelector('.nav__burger-t').textContent = open ? burger.dataset.close : burger.dataset.menu;
     hdr && hdr.classList.remove('is-hidden');
     lock(open);
   });
@@ -182,17 +183,19 @@ const TG_USER = 'wcinreak';
       const bad = fields.filter(f => !check(f));
       if (bad.length) { $('input,textarea', bad[0]).focus(); return; }
       const fd = new FormData(form);
-      const what = fd.getAll('what').join(', ') || 'Not sure yet';
-      const budget = fd.get('budget') || 'Not sure yet';
-      const msg = `Hi Don! New project brief from the website.\n\n${fd.get('message')}\n\nWhat: ${what}\nBudget: ${budget}\nName: ${fd.get('name')}\nContact: ${fd.get('contact')}`;
+      const T = JSON.parse((d.getElementById('form-i18n') || {}).textContent || '{}');
+      const what = fd.getAll('what').join(', ') || T.notSure;
+      const budget = fd.get('budget') || T.notSure;
+      const msg = `${T.greeting}\n\n${fd.get('message')}\n\n${T.what}: ${what}\n${T.budget}: ${budget}\n${T.name}: ${fd.get('name')}\n${T.contact}: ${fd.get('contact')}`;
       if (done) {
         $('.done__box', done).textContent = msg;
         $('.done__tg', done).href = `https://t.me/${TG_USER}?text=${encodeURIComponent(msg)}`;
+        const wa = $('.done__wa', done); if (wa) wa.href = `https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`;
         const cp = $('.done__copy', done);
         cp.onclick = () => {
           (navigator.clipboard ? navigator.clipboard.writeText(msg) : Promise.reject()).then(
-            () => { cp.querySelector('.roll span').textContent = 'Copied'; },
-            () => { cp.querySelector('.roll span').textContent = 'Select the text above'; });
+            () => { cp.querySelector('.roll span').textContent = T.copied; },
+            () => { cp.querySelector('.roll span').textContent = T.copyFail; });
         };
         form.style.display = 'none';
         done.classList.add('is-on');
@@ -201,6 +204,9 @@ const TG_USER = 'wcinreak';
     });
     if (done) $('.done__back', done).addEventListener('click', () => { done.classList.remove('is-on'); form.style.display = ''; });
   });
+
+  /* ---------- Language menu ---------- */
+  $$('details.lang').forEach(dt => d.addEventListener('click', e => { if (!dt.contains(e.target)) dt.removeAttribute('open'); }));
 
   /* ---------- Clock ---------- */
   const clocks = $$('[data-clock]');

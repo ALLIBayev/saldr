@@ -1,0 +1,39 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Shot from '../../../components/Shot.astro';
+import { CASES } from '../../../data/cases';
+import { t, L, LOCALES, DEFAULT, type Lang } from '../../../i18n';
+export function getStaticPaths() {
+  return LOCALES.flatMap((lang) => CASES.map((c, i) => ({
+    params: { lang: lang === DEFAULT ? undefined : lang, slug: c.slug },
+    props: { lang, c, next: CASES[(i + 1) % CASES.length] },
+  })));
+}
+const { c, next } = Astro.props;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const U = T.caseUi; const x = T.cases[c.slug];
+---
+<Base lang={lang} title={`${c.name} — Saldr Studio`} description={`${c.name}: ${x.short}. ${x.title}`} active="work" path={`work/${c.slug}`}>
+  <section class="phero"><div class="wrap">
+    <div class="phero__kicker" data-fade>{x.tags.map((tg) => <span class="tag">{tg}</span>)}</div>
+    <h1 class="h1" data-split style="max-width:18ch">{x.title}</h1>
+    <dl class="cmeta" data-fade>
+      <div><dt>{U.client}</dt><dd>{x.client}</dd></div>
+      <div><dt>{U.year}</dt><dd>{c.year}</dd></div>
+      <div><dt>{U.scope}</dt><dd>{x.scope}</dd></div>
+      <div><dt>{U.status}</dt><dd>{x.status} — <a href={c.href} target="_blank" rel="noopener">{x.link}</a></dd></div>
+    </dl>
+  </div></section>
+  <section><div class="wrap"><div class="cshot"><Shot name={c.imgs[0]} alt={`${c.name} — ${U.home}`} eager /></div></div></section>
+  <section><div class="wrap">
+    <div class="ctext"><h2>{U.brief}</h2><p>{x.brief}</p></div>
+    <div class="ctext"><h2>{U.did}</h2><div><p>{x.did}</p><ul>{x.list.map((i) => <li>{i}</li>)}</ul></div></div>
+    <div class="cfacts">{x.facts.map(([a, b]) => <div class="cfact"><b>{a}</b><span>{b}</span></div>)}</div>
+    <div class="cgal">
+      <div class="cshot" data-clip><Shot name={c.imgs[1] ?? c.imgs[0]} alt={`${c.name} — ${U.inner}`} /></div>
+      <div class="phone" data-parallax="0.08"><Shot name={c.mob} alt={`${c.name} — ${U.phone}`} widths={[390]} sizes="300px" /></div>
+    </div>
+    {c.imgs[2] && <div class="cshot" data-clip style="margin-bottom:clamp(64px,8vw,120px)"><Shot name={c.imgs[2]} alt={`${c.name} — ${U.story}`} /></div>}
+  </div></section>
+  <a class="next" href={L(lang, `work/${next.slug}`)} data-cursor="Next"><div class="wrap"><small>{U.next}</small><p class="h1">{next.name}</p></div></a>
+</Base>

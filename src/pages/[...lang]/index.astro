@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import Btn from '../../components/Btn.astro';
+import Shot from '../../components/Shot.astro';
+import EagleStage from '../../components/EagleStage.astro';
+import SvcVis from '../../components/SvcVis.astro';
+import Steps from '../../components/Steps.astro';
+import Cta from '../../components/Cta.astro';
+import { CASES } from '../../data/cases';
+import { SITE, ig } from '../../data/site';
+import { t, L, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang);
+
+const reel: [string, 'd' | 'm', string][] = [
+  ['layl-1', 'd', 'LAYL'], ['cv-m', 'm', 'ConVoglio'], ['ci-1', 'd', 'USPR Cirillico'],
+  ['layl-m', 'm', 'LAYL'], ['sp-1', 'd', 'San Paolo Torino'], ['cv-2', 'd', 'ConVoglio'],
+  ['ci-m', 'm', 'USPR Cirillico'], ['layl-2', 'd', 'LAYL'], ['sp-m', 'm', 'San Paolo Torino'],
+];
+---
+<Base lang={lang} title={T.meta.home[0]} description={T.meta.home[1]}>
+  <section class="hero">
+    <div class="wrap grid hero__grid">
+      <div class="hero__copy">
+        <p class="hero__status"><i aria-hidden="true"></i>{T.hero.status}</p>
+        <h1 class="h-hero">{T.hero.title}</h1>
+        <p class="lead hero__sub" set:html={T.hero.sub} />
+        <div class="hero__cta"><Btn label={T.hero.cta1} drawer /><Btn label={T.hero.cta2} variant="ghost" href={L(lang, 'work')} /></div>
+      </div>
+      <div class="hero__mark"><EagleStage /></div>
+    </div>
+    <div class="hero__meta"><div class="wrap"><span><b>{T.hero.place}</b> — <span data-clock>--:--</span> {T.hero.localTime}</span><span>{T.hero.langs}</span><span>{T.hero.scroll}</span></div></div>
+  </section>
+
+  <section class="reel" aria-label={T.reelLabel} data-cursor="Drag">
+    <div class="reel__track">
+      {[0, 1].map((dup) => reel.map(([n, k, a]) => (
+        <div class={`reel__item${k === 'm' ? ' reel__item--m' : ''}`} aria-hidden={dup ? 'true' : undefined}>
+          <Shot name={n} alt={dup ? '' : a} widths={k === 'm' ? [390] : [760, 1440]} sizes={k === 'm' ? '230px' : '(min-width: 900px) 760px, 420px'} />
+        </div>
+      )))}
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="manifesto" data-scrub>{T.manifesto.map((p) => <p>{p}</p>)}</div>
+      <div class="sig">
+        <div class="sig__ava"><Shot name="me/avatar" alt={SITE.founder} widths={[160]} sizes="80px" /></div>
+        <p><b>{SITE.founder}</b>{T.founderRole}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" style="padding-top:0">
+    <div class="wrap">
+      <div class="shead"><h2 class="h2" data-split>{T.selected}</h2><Btn label={T.allProjects} variant="ghost" small magnetic={false} href={L(lang, 'work')} /></div>
+      <div class="stack">
+        {CASES.map((c) => { const x = T.cases[c.slug]; return (
+          <a class="case" href={L(lang, `work/${c.slug}`)} data-cursor="View">
+            <div class="case__info"><div><p class="case__name">{c.name} · {c.year}</p><h3 class="case__title" data-blur>{x.short}</h3></div><div class="case__tags">{x.tags.map((tg) => <span class="tag">{tg}</span>)}</div></div>
+            <div class="case__frame"><Shot name={c.imgs[0]} alt={`${c.name} — ${x.short}`} /><div class="case__phone"><Shot name={c.mob} widths={[390]} sizes="230px" /></div></div>
+          </a>
+        ); })}
+      </div>
+    </div>
+  </section>
+
+  <section class="sec dark" data-theme="dark" id="services">
+    <div class="wrap">
+      <div class="shead"><h2 class="h2" data-split>{T.make.title}</h2><p>{T.make.sub}</p></div>
+      <div class="svc">
+        <div class="svc__list">
+          {T.make.items.map(([k, title, p, items]) => (
+            <div class="svc__item" data-vis={k}><h3>{title}</h3><p>{p}</p><ul>{items.map((i) => <li>{i}</li>)}</ul>
+              <div class="svc__vis-inline" aria-hidden="true"><SvcVis k={k} active lang={lang} /></div></div>
+          ))}
+          <div class="svc__more"><Btn label={T.make.pricesLink} variant="light" small magnetic={false} href={`${L(lang, 'services')}#prices`} /></div>
+        </div>
+        <div class="svc__media"><div class="svc__stage"><SvcVis k="web" active lang={lang} /><SvcVis k="app" lang={lang} /><SvcVis k="brand" lang={lang} /><SvcVis k="ai" lang={lang} /></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap">
+      <div class="shead"><h2 class="h2" data-split>{T.process.title}</h2><p>{T.process.sub}</p></div>
+      <Steps lang={lang} />
+    </div>
+  </section>
+
+  <section class="langs" aria-label="Languages">
+    <div class="langs__track" aria-hidden="true">{[...Array(2)].flatMap(() => ['Hello', 'Ciao', 'Привет', 'Сәлем', 'Hola', 'Bonjour']).map((w) => <span>{w}</span>)}</div>
+    <div class="wrap langs__cap"><span>{T.langsCap[0]}</span><span>{T.langsCap[1]}</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="wrap founder">
+      <div>
+        <h2 class="h2" data-split>{T.founder.title}</h2>
+        <p class="lead">{T.founder.text}</p>
+        <div class="founder__btns"><Btn label={T.founder.cta} variant="ink" href={L(lang, 'studio')} /><Btn label={`${T.founder.follow} @${SITE.instagram}`} variant="ghost" href={ig} ext magnetic={false} /></div>
+      </div>
+      <figure class="founder__card founder__card--photo" data-cursor="Ciao">
+        <Shot name="me/don-riomaggiore" alt={T.studio.photoAlt[0]} widths={[480, 720, 960]} sizes="(min-width: 900px) 40vw, 92vw" />
+        <div class="founder__coords"><span>45.07° N · 7.69° E</span><span>{SITE.full}</span></div>
+        <figcaption><span class="founder__big">Saldyrbayev.</span><span class="founder__coords"><span>{T.founderRole}</span><span>{T.hero.place}</span></span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <Cta lang={lang} title={T.ctas.home[0]} text={T.ctas.home[1]} />
+</Base>

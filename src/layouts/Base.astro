@@ -4,33 +4,61 @@ import '../styles/global.css';
 import Eagle from '../components/Eagle.astro';
 import BriefForm from '../components/BriefForm.astro';
 import onestLatin from '@fontsource-variable/onest/files/onest-latin-wght-normal.woff2?url';
-import { SITE, u, tg } from '../data/site';
+import { SITE, u, tg, wa, ig } from '../data/site';
+import { t, L, LOCALES, CODES, OG, DEFAULT, type Lang } from '../i18n';
 
-interface Props { title: string; description: string; active?: string }
-const { title, description, active = '' } = Astro.props;
-const NAV = [['work', 'Work'], ['services', 'Services'], ['studio', 'Studio'], ['contact', 'Contact']];
-const canonical = new URL(Astro.url.pathname, Astro.site);
-const og = new URL(u('og.png'), Astro.site);
+interface Props { lang?: Lang; title: string; description: string; active?: string; path?: string; noindex?: boolean }
+const { lang = DEFAULT, title, description, active = '', path = '', noindex = false } = Astro.props;
+const T = t(lang);
+const NAV: [string, string][] = [['work', T.nav.work], ['services', T.nav.services], ['studio', T.nav.studio], ['contact', T.nav.contact]];
+const abs = (p: string) => new URL(p, Astro.site).href;
+const canonical = abs(L(lang, path));
+const og = abs(u('og.png'));
 const ld = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService', name: SITE.full,
-  description: 'Independent design and development studio in Turin: websites, apps, brand identity and AI automation.',
-  url: new URL(u(''), Astro.site).href, image: og.href, founder: { '@type': 'Person', name: 'Alizhan Saldyrbayev' },
-  address: { '@type': 'PostalAddress', addressLocality: 'Turin', addressCountry: 'IT' },
-  sameAs: [`https://t.me/${SITE.channel}`, `https://github.com/${SITE.github}`],
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ProfessionalService', '@id': abs('/#studio'), name: SITE.full, alternateName: 'Saldr',
+      description: T.meta.home[1], url: abs(u('')), image: og, logo: abs(u('apple-touch-icon.png')),
+      email: SITE.email, telephone: SITE.phone, priceRange: '€€',
+      address: { '@type': 'PostalAddress', addressLocality: 'Torino', addressRegion: 'TO', addressCountry: 'IT' },
+      areaServed: ['IT', 'KZ', 'EU'], availableLanguage: ['en', 'it', 'ru', 'kk'],
+      founder: { '@id': abs('/#founder') },
+      sameAs: [ig, `https://t.me/${SITE.channel}`, `https://github.com/${SITE.github}`],
+      makesOffer: [
+        { '@type': 'Offer', name: 'Landing page', price: '590', priceCurrency: 'EUR' },
+        { '@type': 'Offer', name: 'Website', price: '1490', priceCurrency: 'EUR' },
+        { '@type': 'Offer', name: 'Chat bot', price: '390', priceCurrency: 'EUR' },
+      ],
+    },
+    {
+      '@type': 'Person', '@id': abs('/#founder'), name: SITE.founder, jobTitle: 'Designer and developer',
+      worksFor: { '@id': abs('/#studio') }, sameAs: [ig, `https://github.com/${SITE.github}`],
+    },
+    { '@type': 'WebSite', '@id': abs('/#site'), url: abs(u('')), name: SITE.full, inLanguage: LOCALES },
+  ],
 };
 const word = ['s', 'a', 'l', 'd', 'r'];
+const csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; connect-src 'self' https://cloudflareinsights.com; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests";
+const formT = { greeting: T.form.greeting, notSure: T.form.notSure, copied: T.form.copied, copyFail: T.form.copyFail, ...T.form.lbl };
 ---
 <!doctype html>
-<html lang="en" class="no-js">
+<html lang={lang} class="no-js">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy" content={csp} />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>{title}</title>
   <meta name="description" content={description} />
+  {noindex && <meta name="robots" content="noindex" />}
   <link rel="canonical" href={canonical} />
+  {!noindex && LOCALES.map((l) => <link rel="alternate" hreflang={l} href={abs(L(l, path))} />)}
+  {!noindex && <link rel="alternate" hreflang="x-default" href={abs(L(DEFAULT, path))} />}
   <meta name="theme-color" content="#F2F3EF" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content={SITE.full} />
+  <meta property="og:locale" content={OG[lang]} />
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
@@ -45,27 +73,32 @@ const word = ['s', 'a', 'l', 'd', 'r'];
   <script type="application/ld+json" set:html={JSON.stringify(ld)} />
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
+  <a class="skip" href="#main">{T.nav.skip}</a>
   <div class="haze" aria-hidden="true"><i></i><i></i><i></i></div>
   <div class="blueprint" aria-hidden="true"><svg preserveAspectRatio="none" viewBox="0 0 1440 900"><g fill="none" stroke="currentColor" stroke-width="1"><path vector-effect="non-scaling-stroke" d="M240 0V900M480 0V900M720 0V900M960 0V900M1200 0V900M0 300H1440M0 600H1440"/><circle vector-effect="non-scaling-stroke" cx="720" cy="450" r="330"/><path vector-effect="non-scaling-stroke" stroke-dasharray="4 8" d="M0 0L1440 900M1440 0L0 900"/></g></svg></div>
 
   <div class="pt" aria-hidden="true"><div class="pt__bird"><Eagle /></div><span class="pt__count">000</span><span class="pt__word">saldr — drop to scale</span></div>
 
   <header class="hdr">
-    <a class="logo" href={u('')} aria-label="Saldr Studio, home"><Eagle /><span>saldr</span></a>
+    <a class="logo" href={L(lang)} aria-label={`${SITE.full}, ${T.nav.home}`}><Eagle /><span>saldr</span></a>
     <div class="nav">
       <nav class="nav__links" aria-label="Main"><span class="nav__pill" aria-hidden="true"></span>
-        {NAV.map(([h, t]) => <a href={u(h)} aria-current={active === h ? 'page' : undefined}>{t}</a>)}
+        {NAV.map(([h, tx]) => <a href={L(lang, h)} aria-current={active === h ? 'page' : undefined}>{tx}</a>)}
       </nav>
-      <button class="btn btn--primary btn--sm" type="button" data-drawer-open data-magnetic><span class="roll"><span>Start a project</span><span aria-hidden="true">Start a project</span></span></button>
-      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="mmenu"><span class="nav__burger-t">Menu</span><i aria-hidden="true"></i></button>
+      <details class="lang">
+        <summary aria-label={`${CODES[lang]} — ${T.nav.language}: ${T.langName}`}>{CODES[lang]}<svg width="9" height="6" viewBox="0 0 9 6" fill="none" aria-hidden="true"><path d="M1 1l3.5 3.5L8 1" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+        <ul>{LOCALES.map((l) => <li><a href={L(l, path)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}><b>{CODES[l]}</b>{t(l).langName}</a></li>)}</ul>
+      </details>
+      <button class="btn btn--primary btn--sm" type="button" data-drawer-open data-magnetic><span class="roll"><span>{T.nav.start}</span><span aria-hidden="true">{T.nav.start}</span></span></button>
+      <button class="nav__burger" type="button" aria-expanded="false" aria-controls="mmenu" data-menu={T.nav.menu} data-close={T.nav.close}><span class="nav__burger-t">{T.nav.menu}</span><i aria-hidden="true"></i></button>
     </div>
   </header>
   <div class="mmenu" id="mmenu">
-    <nav aria-label="Mobile">{[['', 'Home'], ...NAV].map(([h, t]) => <a href={u(h)}><span>{t}</span></a>)}</nav>
+    <nav aria-label="Mobile">{[['', T.nav.home] as [string, string], ...NAV].map(([h, tx]) => <a href={L(lang, h)}><span>{tx}</span></a>)}</nav>
     <div class="mmenu__foot">
-      <button class="btn btn--primary" type="button" data-drawer-open>Start a project</button>
-      <p>Telegram <a href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram}</a><br />Turin, Italy · <span data-clock>--:--</span></p>
+      <div class="mmenu__langs" aria-label={T.nav.language}>{LOCALES.map((l) => <a href={L(l, path)} hreflang={l} aria-current={l === lang ? 'true' : undefined}>{CODES[l]}</a>)}</div>
+      <button class="btn btn--primary" type="button" data-drawer-open>{T.nav.start}</button>
+      <p>Telegram <a href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram}</a> · <a href={wa()} target="_blank" rel="noopener">WhatsApp</a> · <a href={ig} target="_blank" rel="noopener">Instagram</a><br />{T.hero.place} · <span data-clock>--:--</span></p>
     </div>
   </div>
   <div class="ruler" aria-hidden="true"></div>
@@ -77,32 +110,44 @@ const word = ['s', 'a', 'l', 'd', 'r'];
     <div class="wrap">
       <div class="ftr__top">
         <div>
-          <p>An independent design and development studio in Turin. Websites, apps, brand identities and AI automation.</p>
-          <a class="ftr__mail link-u" href={tg(SITE.telegram)} target="_blank" rel="noopener">@{SITE.telegram} on Telegram</a>
+          <p>{T.footer.about}</p>
+          <ul class="ftr__contact">
+            <li><a class="ftr__mail link-u" href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+            <li><a class="link-u" href={tg(SITE.telegram)} target="_blank" rel="noopener">Telegram @{SITE.telegram}</a></li>
+            <li><a class="link-u" href={wa()} target="_blank" rel="noopener">WhatsApp {SITE.phone}</a></li>
+          </ul>
         </div>
-        <div><p class="ftr__h">Pages</p><ul>{[...NAV, ['identity', 'Identity']].map(([h, t]) => <li><a class="link-u" href={u(h)}>{t}</a></li>)}</ul></div>
-        <div><p class="ftr__h">Recent work</p><ul><li><a class="link-u" href={u('work/layl')}>LAYL</a></li><li><a class="link-u" href={u('work/convoglio')}>ConVoglio</a></li><li><a class="link-u" href={u('work/cirillico')}>USPR Cirillico</a></li><li><a class="link-u" href={u('work/san-paolo')}>San Paolo Torino</a></li></ul></div>
-        <div><p class="ftr__h">Elsewhere</p><ul>
-          <li><a class="link-u" href={`https://t.me/${SITE.channel}`} target="_blank" rel="noopener">Telegram channel</a></li>
+        <div><p class="ftr__h">{T.footer.pages}</p><ul>{[...NAV, ['identity', T.nav.identity] as [string, string]].map(([h, tx]) => <li><a class="link-u" href={L(lang, h)}>{tx}</a></li>)}</ul></div>
+        <div><p class="ftr__h">{T.footer.recent}</p><ul><li><a class="link-u" href={L(lang, 'work/layl')}>LAYL</a></li><li><a class="link-u" href={L(lang, 'work/convoglio')}>ConVoglio</a></li><li><a class="link-u" href={L(lang, 'work/cirillico')}>USPR Cirillico</a></li><li><a class="link-u" href={L(lang, 'work/san-paolo')}>San Paolo Torino</a></li></ul>
+          <p class="ftr__h" style="margin-top:28px">{T.footer.legal}</p><ul><li><a class="link-u" href={L(lang, 'privacy')}>{T.nav.privacy}</a></li><li><a class="link-u" href={L(lang, 'terms')}>{T.nav.terms}</a></li></ul></div>
+        <div><p class="ftr__h">{T.footer.elsewhere}</p><ul>
+          <li><a class="link-u" href={ig} target="_blank" rel="noopener">Instagram @{SITE.instagram}</a></li>
+          <li><a class="link-u" href={`https://t.me/${SITE.channel}`} target="_blank" rel="noopener">{T.footer.channel}</a></li>
           <li><a class="link-u" href={`https://github.com/${SITE.github}`} target="_blank" rel="noopener">GitHub</a></li>
           <li><a class="link-u" href="https://layl-clo.github.io/layl-store/" target="_blank" rel="noopener">LAYL store</a></li></ul>
-          <p class="ftr__h" style="margin-top:28px">Turin time</p><p><span data-clock>--:--</span></p></div>
+          <p class="ftr__h" style="margin-top:28px">{T.footer.time}</p><p><span data-clock>--:--</span></p></div>
       </div>
       <div class="ftr__word" aria-hidden="true"><span><Eagle /></span>{word.map((c) => <span>{c}</span>)}</div>
-      <div class="ftr__bottom"><span>© {new Date().getFullYear()} Saldr Studio · Alizhan Saldyrbayev</span><span>Drop to scale.</span><a href="#main">Back to top</a></div>
+      <div class="ftr__bottom">
+        <span>© {new Date().getFullYear()} {SITE.full} · {SITE.founder}</span>
+        <span class="ftr__langs">{LOCALES.map((l) => <a href={L(l, path)} hreflang={l} aria-current={l === lang ? 'true' : undefined}>{CODES[l]}</a>)}</span>
+        <a href="#main">{T.footer.top}</a>
+      </div>
     </div>
   </footer>
 
   <div class="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dw-title">
     <div class="drawer__scrim" data-drawer-close></div>
     <div class="drawer__panel">
-      <div class="drawer__head"><h2 id="dw-title" class="h3">Start a project</h2><button class="drawer__close" type="button" data-drawer-close aria-label="Close"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
+      <div class="drawer__head"><h2 id="dw-title" class="h3">{T.form.drawerTitle}</h2><button class="drawer__close" type="button" data-drawer-close aria-label={T.nav.close}><svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M1 1l12 12M13 1 1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button></div>
       <div class="drawer__body">
-        <p class="muted" style="margin-bottom:26px">Tell me what you're making. You'll get a free first screen of it within 48 hours, before any commitment.</p>
-        <BriefForm id="dw" />
+        <p class="muted" style="margin-bottom:26px">{T.form.drawerIntro}</p>
+        <BriefForm id="dw" lang={lang} />
       </div>
     </div>
   </div>
+  <script type="application/json" id="form-i18n" set:html={JSON.stringify(formT)} />
   <script>import '../scripts/main.ts';</script>
+  {SITE.cfBeacon && <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: SITE.cfBeacon })}></script>}
 </body>
 </html>

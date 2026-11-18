@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import Btn from '../../components/Btn.astro';
+import Steps from '../../components/Steps.astro';
+import Cta from '../../components/Cta.astro';
+import { t, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const S = T.services; const P = S.pricing;
+const faqLd = { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: S.faqs.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) };
+---
+<Base lang={lang} title={T.meta.services[0]} description={T.meta.services[1]} active="services" path="services">
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:12ch">{S.title}</h1>
+    <p class="lead" data-fade>{S.lead}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    {S.blocks.map(([title, d, p, items]) => (
+      <div class="sblock"><div class="sblock__head"><h2 data-split>{title}</h2><p>{S.timeline}: {d}</p></div>
+        <div class="sblock__body"><p>{p}</p><ul>{items.map(([a, b]) => <li>{a}<span>{b}</span></li>)}</ul></div></div>
+    ))}
+  </div></section>
+  <section class="sec dark" data-theme="dark" id="prices"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{P.title}</h2><p>{P.sub}</p></div>
+    <div class="plans">
+      {P.plans.map(([n, f, price, time, li, feat]) => (
+        <div class={`plan${feat ? ' plan--feat' : ''}`}>
+          {feat && <span class="tag tag--dark plan__flag">{P.popular}</span>}
+          <h3>{n}</h3><p class="plan__for">{f}</p>
+          <p class="plan__time"><span class="plan__from">{P.from}</span> €{price}{time === P.plans[3][3] && <span class="plan__per">{P.perMonth}</span>}<small>{time}</small></p>
+          <ul>{li.map((i) => <li>{i}</li>)}</ul>
+          <Btn label={`${P.ask} ${n.toLowerCase()}`} variant={feat ? 'primary' : 'light'} small drawer magnetic={false} />
+        </div>
+      ))}
+    </div>
+    <div class="plan-custom">
+      <div><h3>{P.custom[0]}</h3><p>{P.custom[1]}</p></div>
+      <Btn label={P.custom[2]} variant="light" drawer magnetic={false} />
+    </div>
+    <p class="plans__note">{P.note}</p>
+  </div></section>
+  <section class="sec"><div class="wrap"><div class="shead"><h2 class="h2" data-split>{S.processTitle}</h2></div><Steps lang={lang} /></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{S.faqTitle}</h2><p>{S.faqSub}</p></div>
+    <div class="faq">{S.faqs.map(([q, a]) => <details><summary>{q}<i aria-hidden="true"></i></summary><div class="faq__a"><p>{a}</p></div></details>)}</div>
+  </div></section>
+  <Cta lang={lang} title={T.ctas.services[0]} text={T.ctas.services[1]} />
+</Base>

@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import BriefForm from '../../components/BriefForm.astro';
+import Shot from '../../components/Shot.astro';
+import { SITE, tg, wa, ig } from '../../data/site';
+import { t, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const C = T.contact;
+const direct: [string, string, string, boolean][] = [
+  ['Telegram', `@${SITE.telegram}`, tg(SITE.telegram), true],
+  ['WhatsApp', SITE.phone, wa(), true],
+  [C.email, SITE.email, `mailto:${SITE.email}`, false],
+  [C.instagram, `@${SITE.instagram}`, ig, true],
+];
+---
+<Base lang={lang} title={T.meta.contact[0]} description={T.meta.contact[1]} active="contact" path="contact">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:11ch">{C.title}</h1>
+    <p class="lead" data-fade>{C.lead}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap contact">
+    <div class="contact__side">
+      <h2 class="h3">{C.nextTitle}</h2>
+      <ol>{C.steps.map(([b, p], i) => <li><span>{String(i + 1).padStart(2, '0')}</span><div><b>{b}</b><p>{p}</p></div></li>)}</ol>
+      <div class="contact__direct">
+        <div class="contact__me"><Shot name="me/avatar" alt={SITE.founder} widths={[160]} sizes="64px" /><p><b>{SITE.founder}</b><span class="muted">{T.founderRole}</span></p></div>
+        <span class="muted small">{C.direct}</span>
+        <ul class="contact__list">{direct.map(([k, v, h, ext]) => <li><span>{k}</span><a class="link-u" href={h} target={ext ? '_blank' : undefined} rel={ext ? 'noopener' : undefined}>{v}</a></li>)}</ul>
+        <a class="small link-u" href={`https://t.me/${SITE.channel}`} target="_blank" rel="noopener">{C.channel} — @{SITE.channel}</a>
+        <span class="muted small">{C.place} · <span data-clock>--:--</span> {C.localTime}</span>
+      </div>
+    </div>
+    <div class="contact__formwrap"><BriefForm id="pg" lang={lang} /></div>
+  </div></section>
+</Base>

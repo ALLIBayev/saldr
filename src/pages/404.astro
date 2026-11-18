@@ -3,10 +3,14 @@ import Base from '../layouts/Base.astro';
 import Btn from '../components/Btn.astro';
 import EagleStage from '../components/EagleStage.astro';
 import { u } from '../data/site';
+import { t } from '../i18n';
+const T = t('en');
 ---
-<Base title="Page not found — Saldr Studio" description="This page flew off.">
+<Base title={T.meta.notFound[0]} description={T.meta.notFound[1]} noindex>
   <section class="phero"><div class="wrap founder">
-    <div><h1 class="h1" data-split>This page flew off.</h1><p class="lead" data-fade style="margin-top:24px">The link may be old or mistyped. The rest of the site is right where you left it.</p><div style="margin-top:36px"><Btn label="Back to home" href={u('')} /></div></div>
+    <div><h1 class="h1" data-split>{T.notFound.title}</h1><p class="lead" data-fade style="margin-top:24px">{T.notFound.text}</p>
+      <p class="muted" style="margin-top:12px" lang="it">Questa pagina è volata via. · <span lang="ru">Эта страница улетела.</span></p>
+      <div style="margin-top:36px"><Btn label={T.notFound.cta} href={u('')} /></div></div>
     <div style="max-width:420px"><EagleStage labels={false} /></div>
   </div></section>
 </Base>

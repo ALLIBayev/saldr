@@ -1,0 +1,38 @@
+---
+import Base from '../../layouts/Base.astro';
+import Btn from '../../components/Btn.astro';
+import Cta from '../../components/Cta.astro';
+import Shot from '../../components/Shot.astro';
+import { SITE, ig } from '../../data/site';
+import { t, L, langPaths, type Lang } from '../../i18n';
+export const getStaticPaths = langPaths;
+const lang = Astro.props.lang as Lang;
+const T = t(lang); const S = T.studio;
+const icons = ['M22 4v36M8 22a14 14 0 1 0 28 0a14 14 0 1 0 -28 0', 'M6 30h20M14 22h24M6 14h14', 'M6 22a10 10 0 1 0 20 0a10 10 0 1 0 -20 0M18 22a10 10 0 1 0 20 0a10 10 0 1 0 -20 0', 'M6 34 L22 10 L38 34'];
+const tools = ['Figma', 'Astro', 'React', 'Next.js', 'TypeScript', 'Tailwind', 'GSAP', 'Supabase', 'Python', 'Telegram & WhatsApp APIs', 'OpenAI & Claude APIs', 'GitHub Pages & Vercel'];
+---
+<Base lang={lang} title={T.meta.studio[0]} description={T.meta.studio[1]} active="studio" path="studio">
+  <section class="phero"><div class="wrap"><div class="phero__row">
+    <h1 class="h1" data-split style="max-width:13ch">{S.title}</h1>
+    <p class="lead" data-fade>{S.lead}</p>
+  </div></div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap story">
+    <div class="story__photos">
+      <figure class="story__ph story__ph--a" data-clip><Shot name="me/don-riomaggiore" alt={S.photoAlt[0]} widths={[480, 720, 960]} sizes="(min-width: 900px) 30vw, 92vw" eager /><figcaption>Riomaggiore</figcaption></figure>
+      <figure class="story__ph story__ph--b" data-parallax="0.06"><Shot name="me/don-pisa" alt={S.photoAlt[1]} widths={[360, 540]} sizes="(min-width: 900px) 18vw, 50vw" /><figcaption>Pisa</figcaption></figure>
+    </div>
+    <div class="story__body">
+      {S.story.map((p, i) => <p class={i === 1 || i === 2 ? 'muted' : undefined}>{p}</p>)}
+      <div class="story__btns"><Btn label={S.identityCta} variant="ghost" href={L(lang, 'identity')} /><Btn label={`Instagram @${SITE.instagram}`} variant="ghost" href={ig} ext magnetic={false} /></div>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{S.howTitle}</h2></div>
+    <div class="princ">{S.princ.map(([title, p], i) => <div><svg viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={icons[i]} /></svg><div><h3>{title}</h3><p>{p}</p></div></div>)}</div>
+  </div></section>
+  <section class="sec" style="padding-top:0"><div class="wrap">
+    <div class="shead"><h2 class="h2" data-split>{S.toolsTitle}</h2><p>{S.toolsSub}</p></div>
+    <div class="tools">{tools.map((x) => <span>{x}</span>)}</div>
+  </div></section>
+  <Cta lang={lang} title={T.ctas.studio[0]} text={T.ctas.studio[1]} />
+</Base>

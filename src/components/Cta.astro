@@ -1,14 +1,15 @@
 ---
 import Eagle from './Eagle.astro';
 import Btn from './Btn.astro';
-interface Props { title: string; text: string }
-const { title, text } = Astro.props;
+import { t, type Lang } from '../i18n';
+interface Props { title: string; text: string; lang: Lang }
+const { title, text, lang } = Astro.props;
 ---
 <section class="cta">
   <div class="cta__mark" aria-hidden="true"><Eagle /></div>
   <div class="wrap">
     <h2 class="h1" data-split>{title}</h2>
     <p>{text}</p>
-    <Btn label="Start a project" drawer />
+    <Btn label={t(lang).nav.start} drawer />
   </div>
 </section>
